@@ -1,64 +1,18 @@
-# Meu Missal — Instruções para agentes de código
+# Meu Missal — compatibilidade para Claude Code
 
-## Contexto
+`AGENTS.md` é a fonte primária de instruções deste repositório. Leia-o integralmente antes de qualquer alteração e siga a instrução mais próxima da área modificada.
 
-`missa-sync` é o monorepo privado do aplicativo pessoal **Meu Missal**: um PWA offline-first para acompanhamento da Santa Missa. O sistema evoluirá para sincronizar conteúdo por data litúrgica, com validação rígida antes de qualquer exibição no aplicativo.
+Consulte também:
 
-## Limites de privacidade e conteúdo
+- `docs/architecture/overview.md` e `docs/architecture/execution-topology.md` para arquitetura;
+- `docs/decisions/` para decisões normativas;
+- `docs/runbooks/` e `docs/deployment/` para operação;
+- `apps/*/AGENTS.md` e `packages/validators/AGENTS.md` para regras locais.
 
-- Este projeto é privado e pessoal nesta fase.
-- Não implementar compartilhamento público, catálogo público, pagamentos, SaaS, recursos multiusuário ou endpoints de conteúdo sem autenticação.
-- Não adicionar ao Git textos integrais ou conteúdo protegido de terceiros.
-- Versionar apenas schemas, tipos, fixtures sintéticas e exemplos reduzidos.
-- Dados pessoais, snapshots externos e conteúdo privado devem usar `data/private/`, `storage/private/` ou `.local/`; esses locais são ignorados pelo Git.
-- Não criar automações para contornar autenticação, paywall, CAPTCHA, bloqueios técnicos ou termos de fontes externas.
+As invariantes fundamentais são data explícita `YYYY-MM-DD`, timezone explícito, evidência auditável e entrega exclusiva de conteúdo `APPROVED` ou `LOCAL_PRIVATE`. Não use este arquivo para duplicar regras globais.
 
-## Regra de negócio inegociável
+## Curadoria agnostic-core
 
-A data é a autoridade principal.
+Este repositório usa o acervo privado [`agnostic-core`](https://github.com/paulinett1508-dev/agnostic-core) como referência de qualidade, não como acervo inteiro. A seleção em `.agnostic-skills` é a fonte do que se aplica ao Meu Missal; os arquivos expostos em `.claude/skills/` são gerados e não devem ser editados manualmente.
 
-- Toda operação de conteúdo deve receber uma data explícita `YYYY-MM-DD`.
-- Não usar um endpoint `today` como verdade de negócio.
-- Modelar e testar timezone, dia da semana, tempo litúrgico, cor, celebração, precedência, ciclo e leituras.
-- O frontend só pode exibir conteúdo com status `APPROVED` ou `LOCAL_PRIVATE`.
-- Divergências devem gerar `QUARANTINED`; divergência de Evangelho deve bloquear publicação.
-
-## Arquitetura desejada
-
-```text
-apps/
-  web/                  # React + Vite + PWA + Dexie
-  api/                  # Fastify + Prisma
-  worker/               # BullMQ e jobs de ingestão/validação
-packages/
-  domain/               # tipos e regras de negócio
-  schemas/              # schemas Zod
-  collectors/           # contratos/adaptadores de fontes
-  validators/           # validação determinística
-  package-builder/      # pacotes offline assinados
-  shared/               # utilitários sem regra de domínio
-infra/
-docs/
-```
-
-## Stack obrigatória
-
-- Node.js 22+, TypeScript strict, pnpm e Turborepo
-- React, Vite, React Router, TanStack Query, Zustand e Dexie no frontend
-- Fastify, Prisma, PostgreSQL, Redis, BullMQ e Zod no backend
-- Vitest para unit/integration tests e Playwright para E2E
-- Docker Compose para ambiente local
-
-## Convenções de implementação
-
-- Preferir funções pequenas, puras e testáveis.
-- Não usar `any`; use `unknown` e valide com Zod.
-- Centralizar tipos do domínio em `packages/domain`.
-- Validar dados externos antes de persistir.
-- Salvar evidências de coleta, hash, origem, data e versão de parser.
-- Não publicar ou disponibilizar conteúdo que esteja em `PENDING`, `QUARANTINED` ou `REJECTED`.
-- Cada mudança estrutural precisa incluir testes e documentação quando aplicável.
-
-## Próxima implementação
-
-Criar o scaffold completo do monorepo: `apps/web`, `apps/api`, `apps/worker`, todos os `packages` listados, Prisma, Docker Compose, schemas Zod, tipos do domínio, um validador inicial de data e uma rota `GET /health` e `GET /v1/day/:date`.
+Para qualquer alteração visual no PWA, aplicar primeiro `design/sem-cara-de-ia`: decidir uma direção visual específica do produto, reduzir copy óbvia, evitar componentes uniformemente arredondados e apresentar 3 opções distintas (clara/escura) antes de implementar. Mudanças visuais também devem passar pelos gates de acessibilidade, CSS e PWA offline selecionados.

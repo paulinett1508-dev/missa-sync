@@ -1,0 +1,43 @@
+:root { color: #1d2a22; background: #f7f4ec; font-family: Georgia, "Times New Roman", serif; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+button { font: inherit; }
+.app-shell { max-width: 720px; min-height: 100vh; margin: 0 auto; padding: 32px 24px 48px; }
+.eyebrow { margin: 0 0 6px; color: #6f5a2e; font-family: system-ui, sans-serif; font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+h1, h2 { margin: 0; font-weight: 600; }
+h1 { font-size: clamp(2rem, 7vw, 3.1rem); }
+.intro { max-width: 48ch; margin: 12px 0 28px; color: #526158; line-height: 1.55; }
+.progress-card { padding: 16px 0; border-top: 1px solid #d8d0c0; border-bottom: 1px solid #d8d0c0; background: transparent; }
+.progress-copy { display: flex; justify-content: space-between; gap: 12px; color: #526158; font-family: system-ui, sans-serif; font-size: .875rem; }
+.progress-track { height: 5px; margin-top: 12px; overflow: hidden; background: #e8e1d1; }
+.progress-value { height: 100%; background: #7a5c22; transition: width .2s ease; }
+.day-selector { display: grid; gap: 16px; margin-top: 28px; padding: 0 0 24px; border-bottom: 1px solid #d8d0c0; }
+.day-selector h2 { font-size: 1.25rem; }
+.day-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.day-fields label { display: grid; gap: 6px; color: #465349; font-family: system-ui, sans-serif; font-size: .8rem; font-weight: 650; }
+.day-fields input { width: 100%; min-height: 42px; padding: 8px 10px; border: 1px solid #bdb5a6; border-radius: 3px; color: #1d2a22; background: #fffdf8; font: inherit; }
+.import-control { color: #465349; font-family: system-ui, sans-serif; font-size: .8rem; font-weight: 650; }
+.import-control input { display: block; width: 100%; margin-top: 6px; color: #465349; font: inherit; }
+.session-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: end; }
+.session-controls label { display: grid; gap: 6px; color: #465349; font-family: system-ui, sans-serif; font-size: .8rem; font-weight: 650; }
+.session-controls input { min-height: 42px; padding: 8px 10px; border: 1px solid #bdb5a6; border-radius: 3px; background: #fffdf8; }
+.package-state { margin: 0; color: #526158; font-family: system-ui, sans-serif; font-size: .875rem; line-height: 1.45; }
+.package-state--available { color: #1c5b37; }
+.package-state--warning { color: #8a4d25; }
+.section-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 24px 0; }
+.section-tab { min-height: 52px; padding: 8px 5px; border: 0; border-bottom: 2px solid #d5ccbb; border-radius: 0; color: #566157; background: transparent; cursor: pointer; font-family: system-ui, sans-serif; font-size: .75rem; }
+.section-tab[aria-current="step"] { border-color: #2f503c; color: #2f503c; background: transparent; font-weight: 700; }
+.moment { padding: 28px 0 0; background: transparent; }
+.moment h2 { margin-top: 8px; font-size: clamp(1.75rem, 5vw, 2.4rem); }
+.description { margin: 14px 0 24px; color: #526158; font-size: 1.1rem; line-height: 1.55; }
+.guidance { margin: 0; padding-left: 1.25rem; color: #28382e; line-height: 1.8; }
+.package-content { margin-top: 24px; padding: 18px 0; border-top: 1px solid #d9d0bf; border-bottom: 1px solid #d9d0bf; background: transparent; }
+.package-content h3 { margin: 4px 0 12px; font-size: 1.25rem; }
+.package-content p:not(.eyebrow) { margin: 10px 0 0; color: #34443a; line-height: 1.55; }
+.notice { display: none; }
+.actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; }
+.action { min-height: 44px; padding: 10px 16px; border: 1px solid #2f503c; border-radius: 3px; color: #fff; background: #2f503c; cursor: pointer; }
+.action:disabled { border-color: #c9c5bb; color: #98968f; background: #e9e6dd; cursor: not-allowed; }
+.action--secondary { color: #2f503c; background: transparent; }
+.resume { display: none; }
+@media (max-width: 430px) { .app-shell { padding: 20px 16px 28px; } .day-fields, .session-controls { grid-template-columns: 1fr; } .section-list { gap: 5px; } .moment { padding: 22px; } }

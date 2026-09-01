@@ -1,0 +1,11 @@
+CREATE TYPE "Source" AS ENUM ('LOCAL_PRIVATE');
+CREATE TYPE "ValidationStatus" AS ENUM ('PENDING', 'APPROVED', 'QUARANTINED', 'REJECTED', 'LOCAL_PRIVATE');
+CREATE TABLE "CollectionRun" ("id" TEXT PRIMARY KEY, "source" "Source" NOT NULL, "startedAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE "RawSnapshot" ("id" TEXT PRIMARY KEY, "collectionRunId" TEXT NOT NULL REFERENCES "CollectionRun"("id"), "checksum" TEXT NOT NULL UNIQUE, "storagePath" TEXT NOT NULL, "collectedAt" TIMESTAMPTZ NOT NULL, "parserVersion" TEXT NOT NULL);
+CREATE TABLE "LiturgicalDay" ("id" TEXT PRIMARY KEY, "date" TEXT NOT NULL, "timezone" TEXT NOT NULL, "source" "Source" NOT NULL, "checksum" TEXT NOT NULL, "celebrationTitle" TEXT NOT NULL, "season" TEXT NOT NULL, "color" TEXT NOT NULL, "cycleYear" TEXT NOT NULL, "rawSnapshotId" TEXT NOT NULL UNIQUE REFERENCES "RawSnapshot"("id"), UNIQUE("date", "source", "checksum"));
+CREATE TABLE "Reading" ("id" TEXT PRIMARY KEY, "dayId" TEXT NOT NULL REFERENCES "LiturgicalDay"("id"), "kind" TEXT NOT NULL, "reference" TEXT NOT NULL);
+CREATE TABLE "MassSection" ("id" TEXT PRIMARY KEY, "dayId" TEXT NOT NULL REFERENCES "LiturgicalDay"("id"), "sectionId" TEXT NOT NULL, "title" TEXT NOT NULL, "blocks" JSONB NOT NULL);
+CREATE TABLE "SongEntry" ("id" TEXT PRIMARY KEY, "dayId" TEXT NOT NULL REFERENCES "LiturgicalDay"("id"), "moment" TEXT NOT NULL, "title" TEXT NOT NULL, "notes" TEXT);
+CREATE TABLE "ValidationRun" ("id" TEXT PRIMARY KEY, "dayId" TEXT NOT NULL REFERENCES "LiturgicalDay"("id"), "status" "ValidationStatus" NOT NULL, "evidence" JSONB NOT NULL, "validatorVersion" TEXT NOT NULL, "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP);
+CREATE TABLE "PackageVersion" ("id" TEXT PRIMARY KEY, "dayId" TEXT NOT NULL REFERENCES "LiturgicalDay"("id"), "checksum" TEXT NOT NULL, "status" "ValidationStatus" NOT NULL, "storagePath" TEXT NOT NULL, "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, UNIQUE("dayId", "checksum"));
+CREATE TABLE "AuditLog" ("id" TEXT PRIMARY KEY, "event" TEXT NOT NULL, "attributes" JSONB NOT NULL, "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP);

@@ -1,0 +1,14 @@
+{
+  "date": "2026-08-23",
+  "timezone": "America/Sao_Paulo",
+  "weekday": "Sunday",
+  "celebrationTitle": "Celebração Dominical de Exemplo",
+  "season": "Tempo Comum",
+  "color": "Verde",
+  "cycleYear": "B",
+  "readings": [{ "kind": "FIRST_READING", "reference": "Exemplo 1,1-4" }, { "kind": "PSALM", "reference": "Salmo de exemplo" }, { "kind": "GOSPEL", "reference": "Evangelho de exemplo 2,1-5" }],
+  "sections": [{ "id": "introductory-rites", "title": "Ritos iniciais", "blocks": ["Acolhimento autoral para a celebração de exemplo."] }, { "id": "liturgy-of-the-word", "title": "Liturgia da Palavra", "blocks": ["Consulte as referências indicadas no material pessoal autorizado."] }, { "id": "liturgy-of-the-eucharist", "title": "Liturgia Eucarística", "blocks": ["Orientação breve e autoral para acompanhar este momento."] }, { "id": "concluding-rites", "title": "Ritos finais", "blocks": ["Envio e agradecimento em palavras próprias."] }],
+  "songs": [{ "moment": "Entrada", "title": "Canto de Exemplo", "notes": "Metadado sintético; sem letra." }],
+  "source": "LOCAL_PRIVATE",
+  "status": "PENDING"
+}

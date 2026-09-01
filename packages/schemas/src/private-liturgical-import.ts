@@ -1,0 +1,13 @@
+import { z } from "zod";
+
+const timezoneSchema = z.string().min(1).refine((value) => { try { new Intl.DateTimeFormat("en-US", { timeZone: value }); return true; } catch { return false; } }, "Invalid IANA timezone");
+const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value) => { const [year, month, day] = value.split("-").map(Number); const result = new Date(Date.UTC(year, month - 1, day)); return result.getUTCFullYear() === year && result.getUTCMonth() === month - 1 && result.getUTCDate() === day; }, "Invalid calendar date");
+export const ValidationStatusSchema = z.enum(["PENDING", "APPROVED", "QUARANTINED", "REJECTED", "LOCAL_PRIVATE"]);
+export const ReadingReferenceSchema = z.object({ type: z.enum(["FIRST_READING", "PSALM", "SECOND_READING", "GOSPEL"]), citation: z.string().min(1).max(200) });
+export const MassSectionSchema = z.object({ section: z.enum(["introductory-rites", "liturgy-of-the-word", "liturgy-of-the-eucharist", "concluding-rites"]), note: z.string().max(500).optional() });
+export const SongEntrySchema = z.object({ title: z.string().min(1).max(160), moment: z.string().min(1).max(100), notes: z.string().max(500).optional() });
+export const SourceReferenceSchema = z.object({ booklet: z.string().min(1).max(160), page: z.string().max(40).optional(), edition: z.string().max(120).optional() });
+export const PrivateLiturgicalImportSchema = z.object({ date: dateSchema, timezone: timezoneSchema, celebrationTitle: z.string().min(1).max(200), season: z.string().min(1).max(100), color: z.string().min(1).max(50), cycleYear: z.enum(["A", "B", "C"]), celebrationRank: z.string().min(1).max(100), readings: z.array(ReadingReferenceSchema).min(1), massFlow: z.array(MassSectionSchema).min(1), selectedSongs: z.array(SongEntrySchema), personalNotes: z.string().max(2000).optional(), sourceReference: SourceReferenceSchema, source: z.literal("LOCAL_PRIVATE"), status: z.literal("PENDING") });
+export const ValidatedPackageSchema = z.object({ import: PrivateLiturgicalImportSchema, status: ValidationStatusSchema, checksum: z.string().regex(/^sha256:[a-f0-9]{64}$/), sourceEvidence: z.array(z.object({ sourceId: z.string().min(1), contentHash: z.string().min(1), collectedAt: z.string().datetime({ offset: true }), parserVersion: z.string().min(1), decisionRule: z.string().min(1) })).min(1), divergences: z.array(z.object({ code: z.string().min(1), message: z.string().min(1), severity: z.enum(["CRITICAL", "WARNING"]) })) });
+export type PrivateLiturgicalImportInput = z.infer<typeof PrivateLiturgicalImportSchema>;
+export type ValidatedPackageInput = z.infer<typeof ValidatedPackageSchema>;

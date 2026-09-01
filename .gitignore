@@ -19,6 +19,8 @@ test-results/
 # Private content and local snapshots
 data/private/**
 !data/private/.gitkeep
+!data/private/imports/
+!data/private/imports/.gitkeep
 storage/private/**
 !storage/private/.gitkeep
 .local/**
@@ -36,3 +38,6 @@ postgres-data/
 !.vscode/settings.json
 .DS_Store
 Thumbs.db
+
+# TypeScript incremental build state
+*.tsbuildinfo

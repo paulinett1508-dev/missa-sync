@@ -1,0 +1,29 @@
+{
+  "date": "2026-08-23",
+  "timezone": "America/Sao_Paulo",
+  "celebrationTitle": "Domingo da Comunidade",
+  "season": "Tempo Comum",
+  "color": "Verde",
+  "cycleYear": "B",
+  "celebrationRank": "Domingo",
+  "readings": [
+    { "type": "FIRST_READING", "citation": "Leitura fictícia 1,1-5" },
+    { "type": "PSALM", "citation": "Salmo fictício 23" },
+    { "type": "SECOND_READING", "citation": "Carta fictícia 2,1-4" },
+    { "type": "GOSPEL", "citation": "Evangelho fictício 10,1-8" }
+  ],
+  "massFlow": [
+    { "section": "introductory-rites", "note": "Ficar atento ao canto de entrada." },
+    { "section": "liturgy-of-the-word", "note": "Anotar uma frase da homilia." },
+    { "section": "liturgy-of-the-eucharist", "note": "Levar a intenção pessoal à oração." },
+    { "section": "concluding-rites", "note": "Registrar um compromisso para a semana." }
+  ],
+  "selectedSongs": [
+    { "title": "Canto da Manhã", "moment": "Entrada", "notes": "Tom confortável para a assembleia." },
+    { "title": "Mesa Aberta", "moment": "Comunhão", "notes": "Refrão curto; conferir no livreto." }
+  ],
+  "personalNotes": "Lembrar a intenção da família e chegar quinze minutos antes.",
+  "sourceReference": { "booklet": "Meu livreto pessoal", "page": "42", "edition": "Anotações 2026" },
+  "source": "LOCAL_PRIVATE",
+  "status": "PENDING"
+}

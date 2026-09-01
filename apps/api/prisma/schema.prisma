@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Source {
+  LOCAL_PRIVATE
+}
+
+enum ValidationStatus {
+  PENDING
+  APPROVED
+  QUARANTINED
+  REJECTED
+  LOCAL_PRIVATE
+}
+
+model CollectionRun {
+  id        String        @id @default(cuid())
+  source    Source
+  startedAt DateTime      @default(now())
+  snapshots RawSnapshot[]
+}
+
+model RawSnapshot {
+  id              String         @id @default(cuid())
+  collectionRunId String
+  collectionRun   CollectionRun  @relation(fields: [collectionRunId], references: [id])
+  checksum        String         @unique
+  storagePath     String
+  collectedAt     DateTime
+  parserVersion   String
+  day             LiturgicalDay?
+}
+
+model LiturgicalDay {
+  id               String           @id @default(cuid())
+  date             String
+  timezone         String
+  source           Source
+  checksum         String
+  celebrationTitle String
+  season           String
+  color            String
+  cycleYear        String
+  rawSnapshotId    String           @unique
+  rawSnapshot      RawSnapshot      @relation(fields: [rawSnapshotId], references: [id])
+  readings         Reading[]
+  sections         MassSection[]
+  songs            SongEntry[]
+  validations      ValidationRun[]
+  packages         PackageVersion[]
+
+  @@unique([date, source, checksum])
+}
+
+model Reading {
+  id        String        @id @default(cuid())
+  dayId     String
+  day       LiturgicalDay @relation(fields: [dayId], references: [id])
+  kind      String
+  reference String
+}
+
+model MassSection {
+  id        String        @id @default(cuid())
+  dayId     String
+  day       LiturgicalDay @relation(fields: [dayId], references: [id])
+  sectionId String
+  title     String
+  blocks    Json
+}
+
+model SongEntry {
+  id     String        @id @default(cuid())
+  dayId  String
+  day    LiturgicalDay @relation(fields: [dayId], references: [id])
+  moment String
+  title  String
+  notes  String?
+}
+
+model ValidationRun {
+  id               String           @id @default(cuid())
+  dayId            String
+  day              LiturgicalDay    @relation(fields: [dayId], references: [id])
+  status           ValidationStatus
+  evidence         Json
+  validatorVersion String
+  createdAt        DateTime         @default(now())
+}
+
+model PackageVersion {
+  id          String           @id @default(cuid())
+  dayId       String
+  day         LiturgicalDay    @relation(fields: [dayId], references: [id])
+  checksum    String
+  status      ValidationStatus
+  storagePath String
+  createdAt   DateTime         @default(now())
+
+  @@unique([dayId, checksum])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  event      String
+  attributes Json
+  createdAt  DateTime @default(now())
+}

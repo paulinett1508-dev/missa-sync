@@ -1,0 +1,113 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: infra/docker/web.Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-https://api-missal.flowdigitalstudio.com.br}
+    container_name: missa-sync-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${WEB_PORT:-9020}:80"
+    networks:
+      - application
+
+  api:
+    build:
+      context: .
+      dockerfile: infra/docker/api.Dockerfile
+    container_name: missa-sync-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in the production env file}
+      REDIS_URL: ${REDIS_URL:?Set REDIS_URL in the production env file}
+      APP_TIMEZONE: ${APP_TIMEZONE:?Set APP_TIMEZONE in the production env file}
+      API_PORT: 3001
+      WEB_ORIGIN: ${WEB_ORIGIN:-https://missal.flowdigitalstudio.com.br}
+      INTERNAL_INGEST_TOKEN: ${INTERNAL_INGEST_TOKEN:?Set INTERNAL_INGEST_TOKEN in the production env file}
+      LOCAL_AUTH_PASSWORD_SALT: ${LOCAL_AUTH_PASSWORD_SALT:?Set LOCAL_AUTH_PASSWORD_SALT in the production env file}
+      LOCAL_AUTH_PASSWORD_HASH: ${LOCAL_AUTH_PASSWORD_HASH:?Set LOCAL_AUTH_PASSWORD_HASH in the production env file}
+      LOCAL_AUTH_SESSION_SECRET: ${LOCAL_AUTH_SESSION_SECRET:?Set LOCAL_AUTH_SESSION_SECRET in the production env file}
+      PRIVATE_PACKAGE_STORAGE_DIR: /app/storage/private/packages
+      PRIVATE_AUDIT_STORAGE_DIR: /app/storage/private/audit
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${API_PORT:-9021}:3001"
+    volumes:
+      - ./storage/private:/app/storage/private
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - application
+
+  worker:
+    build:
+      context: .
+      dockerfile: infra/docker/worker.Dockerfile
+    container_name: missa-sync-worker
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in the production env file}
+      REDIS_URL: ${REDIS_URL:?Set REDIS_URL in the production env file}
+      APP_TIMEZONE: ${APP_TIMEZONE:?Set APP_TIMEZONE in the production env file}
+      PRIVATE_PACKAGE_STORAGE_DIR: /app/storage/private/packages
+      PRIVATE_AUDIT_STORAGE_DIR: /app/storage/private/audit
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./storage/private:/app/storage/private
+    networks:
+      - application
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: missa-sync-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in the production env file}
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in the production env file}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the production env file}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - application
+
+  redis:
+    image: redis:7-alpine
+    container_name: missa-sync-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - application
+
+networks:
+  application: {}
+
+volumes:
+  postgres-data:
+  redis-data:

@@ -1,0 +1,41 @@
+# Curadoria do agnostic-core para o Meu Missal.
+# Um padrão por linha; a fonte permanece no submódulo .agnostic-core.
+
+# Design e experiência do PWA
+design/sem-cara-de-ia
+design/visual-baseline
+frontend/html-css-audit
+frontend/css-governance
+frontend/accessibility
+frontend/ux-guidelines
+frontend/menos-e-mais
+frontend/pwa-offline-patterns
+frontend/react-performance
+frontend/react-task-checklists
+frontend/internacionalizacao
+ux-ui/principios-de-interface
+ux-ui/ui-ux-quality-gates
+ux-ui/navegacao-sem-redundancia
+
+# Fronteiras da aplicação e dados
+backend/rest-api-design
+backend/error-handling
+backend/domain-driven-design
+security/api-hardening
+security/owasp-checklist
+database/schema-design
+database/query-compliance
+
+# Verificação e operação
+testing/unit-testing
+testing/integration-testing
+testing/e2e-testing
+devops/pre-deploy-checklist
+devops/deploy-procedures
+devops/containerizacao
+devops/eruda-mobile-debug
+devops/css-cache-busting
+audit/pre-implementation
+audit/systematic-debugging
+audit/post-implementation-conformity
+audit/revisao-texto-ptbr
