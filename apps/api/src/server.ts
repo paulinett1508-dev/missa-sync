@@ -40,7 +40,7 @@ registerPackageSyncRoute(app, sessionSecret, packageStorageDirectory, process.en
 registerPrivateImportRoutes(app, { sessionSecret, developmentToken: process.env.NODE_ENV === "production" ? undefined : process.env.DEVELOPMENT_PRIVATE_API_TOKEN, importDirectory: resolve(process.cwd(), process.env.PRIVATE_IMPORT_DIRECTORY ?? "data/private/imports"), validationStore: createPrismaValidationStore(prisma) });
 
 registerDayRoute(app, new RomcalCalendarProvider(new MockCalendarProvider()));
-registerLiturgiaRoute(app, sessionSecret);
+registerLiturgiaRoute(app);
 
 const auditDirectory = process.env.PRIVATE_AUDIT_STORAGE_DIR ?? resolve(process.cwd(), "storage/private/audit");
 registerPackageProductionRoute(app, { enqueue: (input) => enqueuePackageProduction(packageQueue, input) }, ingestToken, createPrivateAuditWriter(auditDirectory));
