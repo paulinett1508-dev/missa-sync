@@ -39,3 +39,4 @@ audit/pre-implementation
 audit/systematic-debugging
 audit/post-implementation-conformity
 audit/revisao-texto-ptbr
+behavioral/model-routing
